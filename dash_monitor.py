@@ -41,7 +41,7 @@ def get_stats(logs):
     stats = analyzer.stats
     return stats
 stats = get_stats(logs)
-
+imports = pd.DataFrame({"count":stats['import']+stats['from']})['count'].value_counts().to_frame().reset_index()
 import plotly.express as px
 
 def log_fig(logs):
@@ -82,6 +82,10 @@ app.layout = html.Div([
             figure=combined_plot(log_fig(logs),mem_fig(memory)),
             id="historical-profile"
         ),
+        dcc.Graph(
+            figure=px.bar(imports, x="index",y="count", title="Most Imported", color="index"),
+            id="top-libraries"
+        ),
         html.H3(
             f"Total Cell Executions: {logs.count()[0]}",
             id="total-executions"
@@ -99,6 +103,7 @@ app.layout = html.Div([
 
 from dash.dependencies import Input, Output
 @app.callback([
+	Output("top-libraries","figure"),
     Output("historical-profile", "figure"),
     Output("total-executions", "children"),
     Output("ticks", "children")
@@ -107,10 +112,14 @@ from dash.dependencies import Input, Output
 def update_info(n_intervals):
     print(n_intervals)
     logs, memory = get_logs(), get_memory()
+    stats = get_stats(logs)
+    
+    imports = pd.DataFrame({"count":stats['import']+stats['from']})['count'].value_counts().to_frame().reset_index()
+    lib_fig = px.bar(imports, x="index",y="count", title="Most Imported", color="index")
 
     fig = combined_plot(log_fig(logs),mem_fig(memory))
     fig['layout']['uirevision'] = 'some-constant'
+    lib_fig['layout']['uirevision'] = 'some-constant'
+    return [lib_fig, fig , f"Total Cell Executions:{logs.count()[0]}", f"Ticks: {n_intervals}"]
 
-    return [fig , f"Total Cell Executions:{logs.count()[0]}", f"Ticks: {n_intervals}"]
-
-app.run_server()
+server = app.server

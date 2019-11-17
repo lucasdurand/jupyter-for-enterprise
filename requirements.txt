@@ -8,4 +8,4 @@ rundown==0.1.4
 statsmodels==0.10.1
 voila==0.1.20
 nbresuse==0.3.2 # we make custom edits to this
-ipynb
+gunicorn
