@@ -110,7 +110,6 @@ from dash.dependencies import Input, Output
 ],
     [Input("interval-component", "n_intervals")])
 def update_info(n_intervals):
-    print(n_intervals)
     logs, memory = get_logs(), get_memory()
     stats = get_stats(logs)
     
