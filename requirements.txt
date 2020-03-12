@@ -2,7 +2,7 @@ jupyter==1.0.0
 pandas==0.25.3
 plotly==4.3.0
 dash==1.6.1
-psutil==5.6.5
+psutil==5.6.6
 rise==5.6.0
 rundown==0.1.4
 statsmodels==0.10.1
